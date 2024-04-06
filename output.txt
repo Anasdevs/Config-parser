@@ -1,0 +1,95 @@
+!
+version 12.3
+!
+hostname retail
+!
+!
+!
+!
+!
+!
+!
+interface dialer 1
+ip address negotiated
+!
+!
+!
+!
+!
+!
+!
+!
+interface FastEthernet0
+!
+interface FastEthernet1
+!
+interface FastEthernet2
+!
+interface FastEthernet3
+!
+interface FastEthernet4
+ip address 192.168.12.2 255.255.255.0 no ip directed-broadcast (default) speed auto
+crypto ipsec client ezvpn ezvpnclient outside
+crypto map static-map
+!
+crypto isakmp policy 1
+!
+crypto isakmp client configuration group rtr-remote
+!
+crypto ipsec transform-set vpn1 esp-3des esp-sha-hmac
+!
+crypto ipsec security-association lifetime seconds 86400
+!
+crypto dynamic-map dynmap 1
+!
+crypto map static-map 1 ipsec-isakmp dynamic dynmap
+crypto map dynmap isakmp authorization list rtr-remote
+crypto map dynmap client configuration address respond
+crypto ipsec client ezvpn ezvpnclient
+!
+interface Dot11Radio0
+!
+!
+!
+!
+!
+!
+!
+interface Dot11Radio0.1
+!
+interface Dot11Radio0.2
+!
+interface Dot11Radio0.3
+!
+interface Vlan1
+crypto ipsec client ezvpn ezvpnclient inside ip inspect firewall in
+!
+interface Vlan2
+!
+interface Vlan3
+!
+interface BVI1
+ip address 10.0.1.1 255.255.255.0
+!
+interface BVI2
+ip address 10.0.2.1 255.255.255.0
+!
+interface BVI3
+ip address 10.0.3.1 255.255.255.0
+!
+!
+!
+!
+!
+!
+!
+!
+!
+access-list 103 permit udp host 200.1.1.1 any eq isakmp
+access-list 103 permit udp host 200.1.1.1 eq isakmp any
+access-list 103 permit esp host 200.1.1.1 any
+access-list 103 permit icmp any any
+access-list 103 deny ip any any
+access-list 105 permit ip 10.1.1.0 0.0.0.255 192.168.0.0 0.0.255.255
+!
+!
