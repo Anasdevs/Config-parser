@@ -1,95 +1,77 @@
-!
+External IP Addresses:
+
+
+Configuration Details:
 version 12.3
-!
 hostname retail
-!
-!
-!
-!
-!
-!
-!
 interface dialer 1
 ip address negotiated
-!
-!
-!
-!
-!
-!
-!
-!
+ppp authentication chap
+dialer pool 1
+dialer-group 1
 interface FastEthernet0
-!
+no ip address
 interface FastEthernet1
-!
+no ip address
 interface FastEthernet2
-!
+no ip address
 interface FastEthernet3
-!
+switchport mode trunk
+no ip address
 interface FastEthernet4
 ip address 192.168.12.2 255.255.255.0 no ip directed-broadcast (default) speed auto
+ip nat outside
+ip access-group 103 in
+no cdp enable
 crypto ipsec client ezvpn ezvpnclient outside
 crypto map static-map
-!
-crypto isakmp policy 1
-!
-crypto isakmp client configuration group rtr-remote
-!
-crypto ipsec transform-set vpn1 esp-3des esp-sha-hmac
-!
-crypto ipsec security-association lifetime seconds 86400
-!
-crypto dynamic-map dynmap 1
-!
-crypto map static-map 1 ipsec-isakmp dynamic dynmap
-crypto map dynmap isakmp authorization list rtr-remote
-crypto map dynmap client configuration address respond
-crypto ipsec client ezvpn ezvpnclient
-!
 interface Dot11Radio0
-!
-!
-!
-!
-!
-!
-!
+no ip address
 interface Dot11Radio0.1
-!
+description Cisco Open
+encapsulation dot1Q 1 native
+no cdp enable
+bridge-group 1
+bridge-group 1 subscriber-loop-control
+bridge-group 1 spanning-disabled
+bridge-group 1 block-unknown-source
+no bridge-group 1 source-learning
+no bridge-group 1 unicast-flooding
 interface Dot11Radio0.2
-!
+encapsulation dot1Q 2
+bridge-group 2
+bridge-group 2 subscriber-loop-control
+bridge-group 2 spanning-disabled
+bridge-group 2 block-unknown-source
+no bridge-group 2 source-learning
+no bridge-group 2 unicast-flooding
 interface Dot11Radio0.3
-!
+encapsulation dot1Q 3
+bridge-group 3
+bridge-group 3 subscriber-loop-control
+bridge-group 3 spanning-disabled
+bridge-group 3 block-unknown-source
+no bridge-group 3 source-learning
+no bridge-group 3 unicast-flooding
 interface Vlan1
+no ip address
+no ip directed-broadcast (default)
+ip nat inside
 crypto ipsec client ezvpn ezvpnclient inside ip inspect firewall in
-!
+no cdp enable
+bridge-group 1
+bridge-group 1 spanning-disabled
 interface Vlan2
-!
+no ip address
+bridge-group 2
+bridge-group 2 spanning-disabled
 interface Vlan3
-!
+no ip address
+bridge-group 3
+bridge-group 3 spanning-disabled
 interface BVI1
 ip address 10.0.1.1 255.255.255.0
-!
 interface BVI2
 ip address 10.0.2.1 255.255.255.0
-!
 interface BVI3
 ip address 10.0.3.1 255.255.255.0
-!
-!
-!
-!
-!
-!
-!
-!
-!
-access-list 103 permit udp host 200.1.1.1 any eq isakmp
-access-list 103 permit udp host 200.1.1.1 eq isakmp any
-access-list 103 permit esp host 200.1.1.1 any
-access-list 103 permit icmp any any
-access-list 103 deny ip any any
-access-list 105 permit ip 10.1.1.0 0.0.0.255 192.168.0.0 0.0.255.255
-!
-!
